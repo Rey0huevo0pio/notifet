@@ -1,0 +1,134 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    margin: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between; /* Asegura que los elementos ocupen todo el espacio */
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 12px 12px;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Controlar espaciado individual entre divs */
+.log {
+    margin-right: 10%; /* Espaciado derecho después del logo */
+}
+
+
+.img_usi {
+    margin-right: 7%;
+    /* No necesita margen derecho ya que es el último elemento */
+}
+
+/* Diseño del logo */
+.log img {
+    width: 12vh;
+ 
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Barra de búsqueda */
+.hed {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 400px;
+    margin-right: auto;
+}
+
+.hed .bara_hed {
+    width: 400px;
+    height: 40px;
+    padding: 0 10px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+.hed .bara_hed:focus {
+    border-color: #007bff;
+}
+
+.hed .bot_hed {
+    height: 40px;
+    padding: 0 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.hed .bot_hed:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos del menú */
+.op_hed {
+    margin-right: 5%;
+    display: flex;
+}
+
+.con_lin {
+    list-style: none;
+    display: flex;
+    gap: 25px; /* Controlar la separación entre las opciones del menú */
+}
+
+.con_lin .lis_op {
+    font-size: 18px;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    padding: 10px;
+    transition: color 0.3s ease;
+}
+
+.con_lin .lis_op::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+.con_lin .lis_op:hover::before {
+    width: 100%;
+}
+
+.con_lin .lis_op:hover {
+    color: #007bff;
+}
+
+/* Imagen del usuario */
+.img_usi img {
+    width: 12vh;
+    
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #007bff;
+}

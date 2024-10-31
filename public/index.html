@@ -4,14 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notificador Web</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <h1>Notificador Web</h1>
-    <input type="text" id="mensaje" placeholder="Escribe tu mensaje">
-    <button id="enviar">Enviar</button>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+<header>
+    <div class="log">
+        <img src="/logo/fondo_1.jpg" alt="Logo">
+    </div>
+
+    <div class="hed">
+        <input type="text" class="bara_hed" placeholder="Buscar...">
+        <button class="bot_hed">Buscar</button>
+    </div>
+
+    <div class="op_hed">
+        <ul class="con_lin">
+            <li class="lis_op">Inicio</li>
+            <li class="lis_op">Mensajes</li>
+            <li class="lis_op">Crear</li>
+        </ul>
+    </div>
+
+    <div class="img_usi">
+        <img src="/logo/logo_1.jpg" alt="Usuario">
+    </div>
+</header>
+
+<h1>Notificador Web</h1>
+<input type="text" id="mensaje" placeholder="Escribe tu mensaje">
+<button id="enviar">Enviar</button>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
