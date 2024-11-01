@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+
 const io = socketIo(server);
 
 const vapidKeys = {
@@ -66,6 +67,7 @@ const subscribeUser = (userId, subscription, res) => {
     }
 };
 
+
 app.post('/subscribe', (req, res) => {
     const { userId, subscription } = req.body;
     subscribeUser(userId, subscription, res);
@@ -109,7 +111,7 @@ const sendPushNotification = async (message) => {
                 const payload = JSON.stringify({
                     title: 'Nuevo Mensaje',
                     body: message,
-                    url: 'http://localhost:3001/' 
+                    url: 'http://localhost:3000/' 
                 });
 
                 webPush.sendNotification(subscription, payload)
@@ -127,12 +129,8 @@ const sendPushNotification = async (message) => {
 
 const reminderInterval = setInterval(() => {
     sendPushNotification('No olvides volver a la página para ver nuevos');
-}, 10000);
+}, 1000000);
 
-
-server.listen(3001, () => {
-    console.log('Servidor corriendo en http://localhost:3000/');
-});
 
 
 module.exports = { subscribeUser, sendPushNotification };

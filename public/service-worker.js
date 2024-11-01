@@ -3,9 +3,9 @@ self.addEventListener('push', event => {
     const title = data.title || 'Notificación';
     const options = {
         body: data.body || 'Tienes un nuevo mensaje.',
-        icon: 'path/to/icon.png',
+        icon: 'path/logo/fondo_1.jpg',
         badge: 'path/to/badge.png', 
-        data: data.url || 'http://localhost:3001/' 
+        data: data.url || 'http://localhost:3000/' 
     };
 
     event.waitUntil(
@@ -18,11 +18,11 @@ self.addEventListener('notificationclick', event => {
     event.notification.close();
 
   
-    let targetUrl = event.notification.data || 'http://localhost:3001/'; 
+    let targetUrl = event.notification.data || 'http://localhost:3000/'; 
 
    
-    if (!targetUrl.startsWith('http://localhost:3001/')) {
-        targetUrl = 'http://localhost:3001/';
+    if (!targetUrl.startsWith('http://localhost:3000/')) {
+        targetUrl = 'http://localhost:3000/';
     }
 
     event.waitUntil(
