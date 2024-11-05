@@ -1,25 +1,51 @@
-const express = require('express');
-const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-
-let grupos = [];
-
-io.on('connection', (socket) => {
-    console.log('Usuario conectado');
-
-    socket.on('crearGrupo', (nombreGrupo) => {
-        grupos.push(nombreGrupo);
-        io.emit('actualizarGrupos', grupos); // Emitir la lista de grupos actualizada
+// Suponiendo que ya tienes una función para cargar grupos en 'lista-grupos'
+function cargarGrupos() {
+    router.get('/', (req, res) => {
+        const userId = req.query.userId; // Obtiene el ID del usuario de la consulta
+    
+        const query = `
+            SELECT g.id, g.nombre 
+            FROM grupos g
+            LEFT JOIN miembros_grupo mg ON g.id = mg.grupoId AND mg.userId = ?
+            WHERE mg.userId IS NOT NULL OR g.creadorId = ?`;
+    
+        db.query(query, [userId, userId], (err, results) => {
+            if (err) {
+                console.error('Error al obtener grupos:', err);
+                return res.status(500).json({ error: 'Error al obtener grupos' });
+            }
+            res.json(results); // Devuelve los grupos en formato JSON
+        });
     });
+    
+}
 
-    // Otras lógicas para manejar mensajes privados o demás eventos
-});
+// Función para mostrar los detalles del grupo
+function mostrarDetallesGrupo(grupoId, nombreGrupo) {
+    document.getElementById('nombre-grupo-seleccionado').textContent = nombreGrupo;
+    document.getElementById('grupo-detalle').style.display = 'block';
+    document.getElementById('miembros-en-linea').innerHTML = 'Cargando miembros...';
 
-// Servir archivos estáticos
-app.use(express.static('public')); // Asumiendo que tu HTML y CSS están en 'public'
+    // Llamada para obtener los miembros del grupo
+    fetch(`/api/grupo-miembros?grupoId=${grupoId}`)
+        .then(response => response.json())
+        .then(miembros => {
+            mostrarMiembrosEnLinea(miembros);
+        })
+        .catch(error => console.error('Error al obtener miembros del grupo:', error));
+}
 
-// Iniciar el servidor
-http.listen(3000, () => {
-    console.log('Servidor escuchando en http://localhost:3000');
-});
+// Mostrar los miembros en línea
+function mostrarMiembrosEnLinea(miembros) {
+    const divMiembros = document.getElementById('miembros-en-linea');
+    divMiembros.innerHTML = ''; // Limpiar contenido anterior
+
+    miembros.forEach(miembro => {
+        const p = document.createElement('p');
+        p.textContent = miembro.nombre; // Suponiendo que el objeto miembro tiene la propiedad 'nombre'
+        divMiembros.appendChild(p);
+    });
+}
+
+// Asegúrate de cargar los grupos al iniciar
+cargarGrupos();

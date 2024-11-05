@@ -1,134 +1,171 @@
+/* Reset CSS */
 * {
-    padding: 0;
     margin: 0;
+    padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    margin: 0;
-}
-
-header {
-    display: flex;
-    justify-content: space-between; /* Asegura que los elementos ocupen todo el espacio */
-    align-items: center;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 0 0 12px 12px;
-    position: sticky;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-/* Controlar espaciado individual entre divs */
-.log {
-    margin-right: 10%; /* Espaciado derecho después del logo */
-}
-
-
-.img_usi {
-    margin-right: 7%;
-    /* No necesita margen derecho ya que es el último elemento */
-}
-
-/* Diseño del logo */
-.log img {
-    width: 12vh;
- 
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* Barra de búsqueda */
-.hed {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    max-width: 400px;
-    margin-right: auto;
-}
-
-.hed .bara_hed {
-    width: 400px;
-    height: 40px;
-    padding: 0 10px;
-    border: 2px solid #ddd;
-    border-radius: 20px;
+    background-color: #f4f4f9;
+    color: #333;
     font-size: 16px;
-    outline: none;
-    transition: border 0.3s ease;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.hed .bara_hed:focus {
-    border-color: #007bff;
-}
-
-.hed .bot_hed {
-    height: 40px;
-    padding: 0 15px;
-    background-color: #007bff;
+.header {
+    background-color: #1e90ff;
     color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+    max-width: 50px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 30px;
+    font-size: 1rem;
+    outline: none;
+    width: 200px;
+    margin-right: 0.5rem;
+}
+
+.search-button {
+    background-color: white;
+    color: #1e90ff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.hed .bot_hed:hover {
-    background-color: #0056b3;
+.search-button:hover {
+    background-color: #f0f0f0;
 }
 
-/* Estilos del menú */
-.op_hed {
-    margin-right: 5%;
+.nav {
+    flex: 1;
+}
+
+.nav-links {
     display: flex;
-}
-
-.con_lin {
     list-style: none;
-    display: flex;
-    gap: 25px; /* Controlar la separación entre las opciones del menú */
+    justify-content: center;
+    gap: 1.5rem;
 }
 
-.con_lin .lis_op {
-    font-size: 18px;
-    color: #333;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    padding: 10px;
-    transition: color 0.3s ease;
+.nav-item {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    transition: background-color 0.3s ease;
 }
 
-.con_lin .lis_op::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 3px;
-    background-color: #007bff;
-    transition: width 0.3s ease;
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-.con_lin .lis_op:hover::before {
-    width: 100%;
-}
-
-.con_lin .lis_op:hover {
-    color: #007bff;
-}
-
-/* Imagen del usuario */
-.img_usi img {
-    width: 12vh;
-    
+.user-avatar img {
+    max-width: 40px;
     border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #007bff;
+}
+
+.sections-container {
+    margin-top: 20px;
+    width: 90%;
+}
+
+.section {
+    background-color: white;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.item-list {
+    list-style-type: none;
+    margin-top: 1rem;
+    padding: 0;
+}
+
+.main-content {
+    width: 90%;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 2rem;
+    color: #1e90ff;
+}
+
+.message-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.message-input {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    width: 60%;
+    outline: none;
+}
+
+.send-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.send-button:hover {
+    background-color: #1c7ed6;
+}
+
+.modal {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    margin: 1.5rem auto;
+}
+
+.create-group-button {
+    background-color: #1e90ff;
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.create-group-button:hover {
+    background-color: #1c7ed6;
 }

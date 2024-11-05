@@ -20,10 +20,38 @@
 
     <div class="op_hed">
         <ul class="con_lin">
-            <li class="lis_op">Inicio</li>
-            <li class="lis_op">Mensajes</li>
-            <li class="lis_op">Crear</li>
+            <li class="lis_op" id="mis-grupos-btn">Mis grupos</li>
+            <li class="lis_op" id="mis-amigos-btn">Mis amigos</li>
+            <li class="lis_op" id="crear-grupo-btn">Crear Grupo</li>
         </ul>
+        
+        <!-- Sección de Grupos -->
+        <div id="mis-grupos" class="seccion" style="display: none;">
+            <h2>Mis Grupos</h2>
+            <ul id="lista-grupos"></ul> <!-- Aquí se mostrarán los grupos -->
+        </div>
+        
+        <!-- Sección de Amigos -->
+        <div id="mis-amigos" class="seccion" style="display: none;">
+            <h2>Mis Amigos</h2>
+            <ul id="lista-amigos"></ul> <!-- Aquí se mostrarán los amigos -->
+        </div>
+
+        <!-- Detalles del grupo seleccionado -->
+        <div id="grupo-detalle" style="display: none;">
+            <h3 id="nombre-grupo-seleccionado"></h3>
+            <div id="miembros-en-linea"></div> <!-- Aquí se mostrarán los miembros en línea -->
+        </div>
+        
+        <!-- Modal para Crear Grupo -->
+        <div id="crear-grupo-modal" class="modal" style="display: none;">
+            <h2>Crear Grupo</h2>
+            <form id="form-crear-grupo">
+                <input type="text" id="nombre-grupo" placeholder="Nombre del grupo" required>
+                <button type="submit">Crear</button>
+            </form>
+        </div>
+        
     </div>
 
     <div class="img_usi">
@@ -40,6 +68,8 @@
 <!-- Cargar Socket.IO y tu script -->
 <script src="/socket.io/socket.io.js"></script>
 <script src="./script.js"></script>
+<script src="./controles js/controlador_op.js"></script>
+<script src="../src/routes/groupRoutes.js"></script>
 
 </body>
 </html>

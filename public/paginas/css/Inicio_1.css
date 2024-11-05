@@ -1,0 +1,200 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+}
+
+/*Parte del inicio del header*/
+.con_hed {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background-color: #2b2d42;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hed_log {
+    display: flex;
+    align-items: center;
+}
+
+.hed_log img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.con_ti {
+    font-size: 24px;
+    font-weight: bold;
+    color: #edf2f4;
+}
+
+.hed_bus {
+    display: flex;
+    align-items: center;
+    width: 40%;
+}
+
+.int {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #8d99ae;
+    outline: none;
+    font-size: 16px;
+    background-color: #edf2f4;
+    margin-right: 10px;
+    color: #2b2d42;
+}
+
+.hed_bott {
+    background-color: #8d99ae;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.hed_bott:hover {
+    background-color: #ef233c;
+}
+
+.hed_nav {
+    display: flex;
+    gap: 20px;
+}
+
+.hed_opt {
+    color: #edf2f4;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.hed_opt:hover {
+    background-color: #ef233c;
+}
+
+
+@media (max-width: 768px) {
+    .con_hed {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .hed_bus {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .hed_nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+/*paret final del header*/
+/*container*/
+/*primer div del cuerpo*/
+/* Estilos para ocultar y mostrar las listas */
+/* Estilos para ocultar y mostrar las listas */
+.lista_opciones {
+    display: none; /* Ocultar todas las listas inicialmente */
+    background-color: #f4f4f4;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Clase para mostrar la lista cuando sea visible */
+.lista_opciones_visible {
+    display: block; /* Mostrar la lista cuando se agregue esta clase */
+}
+
+/* Estilos adicionales (puedes ajustar estos valores según tu diseño) */
+.con_hed {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 10px;
+}
+
+.hed_log img {
+    width: 50px;
+    height: 50px;
+}
+
+.hed_log h2 {
+    color: white;
+    margin-left: 10px;
+}
+
+.hed_bus {
+    display: flex;
+}
+
+.int {
+    padding: 5px;
+}
+
+.hed_bott {
+    padding: 5px 10px;
+    background-color: #555;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.hed_nav {
+    display: flex;
+}
+
+.hed_opt {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.hed_opt:hover {
+    text-decoration: underline;
+}
+
+.container {
+    margin: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 5px 0;
+}
+
+
+/*final del primer div del cuerpo*/
+/*segundo div del cuerpo*/
+/*final del segundo div del cuerpo*/
+/*tercer div del cuerpo*/
+/*final del tercer div del cuerpo*/
+/*container final*/

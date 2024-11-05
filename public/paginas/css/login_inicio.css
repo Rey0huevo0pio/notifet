@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url(./img/Lugh_spear_Millar.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    background-color: transparent;
+    padding: 30px 40px;
+    background-size: cover;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(1px);
+    transition: opacity 0.5s ease, transform o.5s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.container:hover {
+    transition: 2s;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid #555;
+    box-shadow: 0 0 5px rgba(152, 27, 27, 50);
+    backdrop-filter: blur(5px);
+}
+
+.container h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 25px;
+}
+
+.inp {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.inp label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.inp input[type="text"],
+.inp input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fafafa;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3 ease;
+}
+
+.inp input[type="text"]:focus,
+.inp input[type="password"]:focus {
+    border-color: #007bff;
+}
+
+.btn-sub {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.btn-sub:hover {
+    background-color: #0056b3;
+}
+
+.container a {
+    font-size: 18px;
+    color: #0056;
+    transition: 0.4s;
+    margin-right: 100%;
+}
+
+.container a:hover {
+    font-size: 20px;
+    color: #0056b3;
+    transition: 0.5s;
+}
+
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+max-height: 100px;
+}
+.message.hidden{
+
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    display: none;
+}
+
+
+.M_SUCCESS {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.M_ERROR {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+
+.show{
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 30px;
+    }
+}

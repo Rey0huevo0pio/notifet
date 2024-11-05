@@ -1,14 +1,18 @@
-document.getElementById('createGroup').addEventListener('click', () => {
-    const groupName = document.getElementById('groupName').value;
+// Obtener grupos de un usuario
+app.get('/api/grupos', (req, res) => {
+    const userId = req.query.userId; // Asegúrate de que el ID del usuario se pasa como query
 
-    if (groupName.trim() === '') {
-        alert('Por favor, ingresa un nombre para el grupo.');
-        return;
-    }
+    const query = `
+        SELECT g.id, g.nombre 
+        FROM grupos g
+        JOIN miembros_grupo mg ON g.id = mg.grupoId
+        WHERE mg.userId = ? OR g.creadorId = ?`;
 
-    // Aquí podrías agregar la lógica para enviar el nombre del grupo al servidor.
-    socket.emit('crearGrupo', groupName);
-    
-    // Limpiar el campo de entrada
-    document.getElementById('groupName').value = '';
+    db.query(query, [userId, userId], (err, results) => {
+        if (err) {
+            console.error('Error al obtener grupos:', err);
+            return res.status(500).json({ error: 'Error al obtener grupos' });
+        }
+        res.json(results);
+    });
 });

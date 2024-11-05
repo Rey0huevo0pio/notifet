@@ -109,6 +109,6 @@ const sendPushNotification = async (message) => {
 // Intervalo para recordatorio (ajustar el tiempo según sea necesario)
 const reminderInterval = setInterval(() => {
     sendPushNotification('No olvides volver a la página para ver nuevos');
-}, 10000); // Cambié a 10 segundos para pruebas
+}, 1000000); // Cambié a 10 segundos para pruebas
 
 module.exports = { subscribeUser, sendPushNotification };
