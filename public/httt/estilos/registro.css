@@ -1,0 +1,110 @@
+
+/* Reset de márgenes y relleno */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos para el fondo de la página */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Contenedor del formulario */
+.container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Título del formulario */
+.container h1 {
+    margin-bottom: 1.5rem;
+    color: #4e54c8;
+}
+
+/* Contenedor de mensaje de error */
+#errorMessage {
+    color: #fff;
+    background-color: #ad1717;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #575656;
+    font-weight: bold;
+    display: none; /* Oculto por defecto */
+}
+
+/* Icono de advertencia */
+#errorMessage .error-icon {
+    content: '⚠️';
+    margin-right: 0.8rem;
+    display: none; /* Ocultamos el icono por defecto */
+}
+
+/* Etiquetas y campos de entrada */
+label {
+    display: block;
+    font-weight: bold;
+    text-align: left;
+    margin: 0.5rem 0 0.3rem;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+/* Botón de envío */
+button {
+    background: #4e54c8;
+    color: #fff;
+    padding: 0.8rem;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #373bbd;
+}
+
+/* Enlace de registro */
+.message {
+    margin-top: 1rem;
+    color: #555;
+}
+
+.message a {
+    color: #4e54c8;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.message a:hover {
+    color: #373bbd;
+}

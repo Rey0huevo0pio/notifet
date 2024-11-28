@@ -1,6 +1,7 @@
 {
   "name": "webalizer",
   "version": "1.0.0",
+ 
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,7 +20,10 @@
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
+    "mysql2": "^3.11.4",
+    "path": "^0.12.7",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "web-push": "^3.6.7"
   }
 }
