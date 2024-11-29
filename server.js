@@ -3,9 +3,15 @@ const socket = require('socket.io');
 const http = require('http');
 const session = require('express-session');
 const cors = require('cors');
+const db =require('./db');
+require('dotenv').config();
+
+
 const { registrarUsuario } = require('./registro');
 const { iniciarSesion } = require('./login');
-require('dotenv').config();
+const { subscribeUser, sendPushNotification } = require('./public/src/notifications');
+const {cargarMensajes, guardarMensaje } = require('./public/controles-js/mensajes.js/Gurdar_m');
+
 
 const app = express();
 const server = http.createServer(app); 
@@ -86,15 +92,32 @@ io.on('connection', (socket) => {
 
     console.log(`Nuevo usuario conectado: ${username}`);
 
+    // Cargar mensajes previos
+    cargarMensajes((err, results) => {
+        if (err) {
+            socket.emit('error', 'No se pudieron cargar los mensajes');
+            return;
+        }
+        socket.emit('load messages', results);
+    });
+
     socket.on('chat message', (msg) => {
-        const serverOffset = Date.now(); 
-        io.emit('chat message', msg, serverOffset, username);
+        const serverOffset = Date.now();
+        guardarMensaje(msg, username, serverOffset, (err) => {
+            if (err) {
+                socket.emit('error', 'No se pudo guardar el mensaje');
+                return;
+            }
+            io.emit('chat message', { msg, serverOffset, username });
+        });
     });
 
     socket.on('disconnect', () => {
         console.log(`${username} se ha desconectado`);
     });
 });
+
+
 
 server.listen(3000, () => {
     console.log('Servidor corriendo en http://localhost:3000/');

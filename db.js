@@ -13,10 +13,8 @@ db.connect(function (err) {
         return;
     }
     console.log('Conectado al servidor MySQL.');
-
-    db.query('DROP DATABASE IF EXISTS piochat', function (err, result) {
-  
-        db.query('CREATE DATABASE IF NOT EXISTS piochat', function (err, result) {
+    db.query('CREATE DATABASE IF NOT EXISTS piochat', function (err, result) {
+   
             if (err) {
                 console.error('Problemas al crear la tabla principal: ', err.message);
                 return;
@@ -38,6 +36,22 @@ db.connect(function (err) {
                         password VARCHAR(255) NOT NULL
                     );
                 `;
+                const crearTabla_notif = `
+                CREATE TABLE IF NOT EXISTS subscriptions (
+                    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                    userId VARCHAR(255) NOT NULL,
+                    subscription VARCHAR(255) NOT NULL,
+                    created_at VARCHAR(255) NOT NULL
+                );
+                   `;
+                   const crearTabla_mensa= `
+                CREATE TABLE IF NOT EXISTS menssages (
+                    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                    content TEXT,
+                    username VARCHAR(255) NOT NULL,
+                    created_at VARCHAR(255) NOT NULL
+                );
+                   `;
                 db.query(crearTabla, function (err, result) {
                     if (err) {
                         console.error('problemas al crear la tabla "usuarios": ', err.message);
@@ -45,8 +59,22 @@ db.connect(function (err) {
                     }
                     console.log('Tabla "usuarios" fue creada correctamente.');
                 });
+                db.query(crearTabla_notif, function (err, result) {
+                    if (err) {
+                        console.error('problemas al crear la tabla "Notificacion": ', err.message);
+                        return;
+                    }
+                    console.log('Tabla "Notificacion" fue creada correctamente.');
+                });
+                db.query(crearTabla_mensa, function (err, result) {
+                    if (err) {
+                        console.error('problemas al crear la tabla "mensaje": ', err.message);
+                        return;
+                    }
+                    console.log('Tabla "mensaje" fue creada correctamente.');
+                });
             });
-        });
+     
     });
 });
 

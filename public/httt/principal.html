@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,41 +8,43 @@
     <link rel="stylesheet" type="text/css" href="./estilos/estilo.css">
 </head>
 
-<body class="bo_cur">
-
-
+<body>
     <div class="app-container">
         <!-- Barra lateral -->
         <div class="sidebar">
             <div class="header-sidebar">
+                <button id="requestPermissionButton">Solicitar Permiso de Notificación</button>
                 <button class="btn-crear-grupo">Crear grupo</button>
                 <button class="btn-cerrar-sesion" onclick="logout()">Cerrar sesión</button>
-                <button id="subscribe" class="btn-crear-sub" >Suscribirse</button>
             </div>
             <div class="chats">
                 <!-- Los chats van aquí -->
             </div>
         </div>
 
-   
-    
-    <section id="chat">
-        <h1>Chat Bot</h1>
-        <ul id="messages"></ul>
-        <form id="form" action="">
-            <input id="message" autocomplete="off" /><button>Enviar</button>
-        </form>
-
-
-
-
-    </section>
-
-
-</div>
-    <script type="text/javascript" src="../src/script.js"></script>
-
-    <script type="module" src="../mensaje.js"></script>
-
+        <!-- Ventana de chat -->
+        <div class="chat-window">
+            <div class="chat-header">
+                <h1>Chat Bot</h1>
+                <h2 id="username">Usuario</h2> <!-- Mostrar el nombre del usuario -->
+            </div>
+            <div class="chat-body">
+                <ul id="messages" class="mensa">
+           
+                </ul>
+            </div>
+            <div class="chat-footer">
+                <form id="form" action="">
+                    <input id="message" autocomplete="off" type="text" placeholder="Escribe un mensaje..."
+                        class="input-message">
+                    <button class="btn-send">✉</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
+<script type="text/javascript" src="../src/script.js"></script>
+
+<script type="module" src="../mensaje.js"></script>
+
 </html>

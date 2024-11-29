@@ -25,7 +25,7 @@ async function iniciarSesion(username, password) {
                 }
 
                 resolve('Inicio de sesión exitoso.');
-                window.location.href = '../httt/principal.html';
+
             });
         });
     });

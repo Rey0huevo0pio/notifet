@@ -1,37 +1,43 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
-        
-const socket = io(); // Mover esto aquí para acceder a socket antes de la interacción del usuario
+
+const socket = io();
 
 document.addEventListener('DOMContentLoaded', () => {
-
     const getUsername = async () => {
         const username = localStorage.getItem('username');
         if (username) {
-            console.log(`User existed ${username}`);
             return username;
         }
         const res = await fetch('https://random-data-api.com/api/users/random_user');
         const { username: randomUsername } = await res.json();
-        console.log('random', randomUsername);
         localStorage.setItem('username', randomUsername);
         return randomUsername;
     };
 
     getUsername().then(username => {
-        socket.auth = { username }; // Configura el username en socket.auth
-        socket.connect(); // Conecta el socket después de configurar el auth
+        socket.auth = { username };
+        socket.connect();
     });
 
     const form = document.getElementById('form');
     const input = document.getElementById('message');
     const messages = document.getElementById("messages");
 
-    socket.on('chat message', (msg, serverOffset, username) => {
-        const item = `<li><p>${msg}</p><small>${username}</small></li>`;
+    socket.on('load messages', (messages) => {
+        const list = messages.map(({ content, username }) => {
+            const isOwnMessage = username === localStorage.getItem('username');
+            const messageClass = isOwnMessage ? 'sent' : 'received';
+            return `<li class="message ${messageClass}"><p>${content}</p><small>${username}</small></li>`;
+        }).join('');
+        document.getElementById('messages').innerHTML += list;
+    });
+
+    socket.on('chat message', ({ msg, serverOffset, username }) => {
+        const isOwnMessage = username === localStorage.getItem('username');
+        const messageClass = isOwnMessage ? 'sent' : 'received';
+        const item = `<li class="message ${messageClass}"><p>${msg}</p><small>${username}</small></li>`;
         messages.insertAdjacentHTML('beforeend', item);
-        socket.auth.serverOffset = serverOffset;
         messages.scrollTop = messages.scrollHeight;
-        mostrarNotificacion(msg, username);
     });
 
     form.addEventListener('submit', (e) => {
