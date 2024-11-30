@@ -4,21 +4,29 @@ const socket = io();
 
 document.addEventListener('DOMContentLoaded', () => {
     const getUsername = async () => {
-        const username = localStorage.getItem('username');
-        if (username) {
-            return username;
+        try {
+            // Obtenemos el nombre de usuario desde el servidor
+            const res = await fetch('/user-info', { credentials: 'include' });
+            if (res.ok) {
+                const { username } = await res.json();
+                return username;
+            } else {
+                throw new Error('No se pudo obtener el usuario');
+            }
+        } catch (error) {
+            console.error(error);
+            return 'Anónimo'; // Fallback en caso de error
         }
-        const res = await fetch('https://random-data-api.com/api/users/random_user');
-        const { username: randomUsername } = await res.json();
-        localStorage.setItem('username', randomUsername);
-        return randomUsername;
     };
 
     getUsername().then(username => {
+        localStorage.setItem('username', username);
+        document.getElementById('username').textContent = username;
         socket.auth = { username };
         socket.connect();
     });
 
+    
     const form = document.getElementById('form');
     const input = document.getElementById('message');
     const messages = document.getElementById("messages");
@@ -32,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('messages').innerHTML += list;
     });
 
-    socket.on('chat message', ({ msg, serverOffset, username }) => {
+    socket.on('chat message', ({ msg, username }) => {
         const isOwnMessage = username === localStorage.getItem('username');
         const messageClass = isOwnMessage ? 'sent' : 'received';
         const item = `<li class="message ${messageClass}"><p>${msg}</p><small>${username}</small></li>`;

@@ -16,17 +16,51 @@
                 <button id="requestPermissionButton">Solicitar Permiso de Notificación</button>
                 <button class="btn-crear-grupo">Crear grupo</button>
                 <button class="btn-cerrar-sesion" onclick="logout()">Cerrar sesión</button>
+            
+                <div class="mi_grup">
+                    <h4 class="tex_grup">Mis Grupos
+    
+                    </h4>
+                    <ul id="lis_grup">
+                    </ul>
+                </div>
+                <div class="mi_ami">
+                    <h4 class="tex_grup">Mis Amigos
+                        
+                    </h4>
+                    <ul id="lis_Amigos">
+                    </ul>
+                </div>
+                
             </div>
+
+          
+
+
             <div class="chats">
-                <!-- Los chats van aquí -->
+             <p>
+              chat pio
+             </p>
             </div>
         </div>
+        
+
+        <div id="form-crear-grupo" style="display: none;">
+            <form id="crear-grupo-form">
+                <label for="nombre-grupo">Nombre del grupo:</label>
+                <input type="text" id="nombre-grupo" name="nombre-grupo" required />
+                <button type="submit" class="button_grup">Crear</button>
+                <button type="button" id="cancelar-crear-grupo" class="button_grup">Cancelar</button>
+            </form>
+        </div>
+
 
         <!-- Ventana de chat -->
         <div class="chat-window">
+            
             <div class="chat-header">
                 <h1>Chat Bot</h1>
-                <h2 id="username">Usuario</h2> <!-- Mostrar el nombre del usuario -->
+                <h2 id="username">username</h2> <!-- Mostrar el nombre del usuario -->
             </div>
             <div class="chat-body">
                 <ul id="messages" class="mensa">
@@ -44,7 +78,8 @@
     </div>
 </body>
 <script type="text/javascript" src="../src/script.js"></script>
-
+<script src="../controles-js/Crear_grupo/Recargar.js"></script>
+<script type="text/javascript" src="../controles-js/Crear_grupo/Button_Grupo.js"></script>
 <script type="module" src="../mensaje.js"></script>
-
+<script src="../controles-js/seguridad.js"></script>
 </html>

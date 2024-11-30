@@ -54,6 +54,31 @@ body {
     background-color: #45a049;
 }
 
+.header-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#form-crear-grupo {
+    margin: 20px;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button_grup {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button_grup:hover {
+    background-color: #007BFF;
+    color: #ffffff;
+}
+
 /* Chat Window */
 .chat-window {
     flex-grow: 1;
@@ -73,6 +98,7 @@ body {
 }
 
 .chat-body {
+    max-width: 1200px;
     flex-grow: 1;
     padding: 15px;
     overflow-y: auto;

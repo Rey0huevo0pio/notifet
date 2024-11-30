@@ -1,4 +1,5 @@
 const mysql = require('mysql2');
+const MySQLStore=require('connect-mysql')(session);
 
 
 const db = mysql.createConnection({
@@ -6,6 +7,15 @@ const db = mysql.createConnection({
     user: 'root',
     password: '',
 });
+
+const sessionStore = new MySQLStore({
+    config:{
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database:'piochat',
+    },
+})
 
 db.connect(function (err) {
     if (err) {
@@ -52,6 +62,20 @@ db.connect(function (err) {
                     created_at VARCHAR(255) NOT NULL
                 );
                    `;
+                   const crearTabla_grupo= `
+                   CREATE TABLE IF NOT EXISTS grupo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    content VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    privilegio ENUM('public', 'private') NOT NULL,
+    created_at DATETIME NOT NULL
+);
+                      `;
+                        db.query(crearTabla, function (err, result) {
+                    if (err) {
+                        console.error('problemas al crear la tabla "usuarios": ', err.message);
+                        return;
+                    }
                 db.query(crearTabla, function (err, result) {
                     if (err) {
                         console.error('problemas al crear la tabla "usuarios": ', err.message);
@@ -74,8 +98,17 @@ db.connect(function (err) {
                     console.log('Tabla "mensaje" fue creada correctamente.');
                 });
             });
+            db.query(crearTabla_grupo, function (err, result) {
+                if (err) {
+                    console.error('problemas al crear la tabla "Grupos": ', err.message);
+                    return;
+                }
+                console.log('Tabla "Grupos" fue creada correctamente.');
+            });
+        });
      
     });
+    
 });
 
 module.exports = db;

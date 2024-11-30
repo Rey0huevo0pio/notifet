@@ -1,9 +1,8 @@
-// mensajes.js
 const db = require('../../../db');
 
 /**
  * Carga todos los mensajes de la base de datos.
- * @param {Function} callback Función de devolución de llamada con los resultados o el error.
+ * @param {Function} Función de devolución de llamada con los resultados o el error.
  */
 function cargarMensajes(callback) {
     const query = 'SELECT * FROM menssages ORDER BY created_at ASC';
