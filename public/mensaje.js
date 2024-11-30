@@ -19,27 +19,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Mostrar un indicador de carga mientras se obtiene el usuario
+    const showLoadingMessages = () => {
+        const messages = document.getElementById('messages');
+        messages.innerHTML = '<li class="loading">Cargando mensajes...</li>';
+    };
+
+    const removeLoadingMessages = () => {
+        const loadingMessage = document.querySelector('.loading');
+        if (loadingMessage) loadingMessage.remove();
+    };
+
+    showLoadingMessages(); // Mostrar indicador de carga al inicio
+
     getUsername().then(username => {
-        localStorage.setItem('username', username);
-        document.getElementById('username').textContent = username;
-        socket.auth = { username };
-        socket.connect();
+        if (username !== 'Anónimo') {
+            localStorage.setItem('username', username);
+            document.getElementById('username').textContent = username;
+            socket.auth = { username };
+            socket.connect();
+        } else {
+            window.location.href = './login.html'; // Redirigir al login si no se puede obtener el usuario
+        }
     });
 
-    
     const form = document.getElementById('form');
     const input = document.getElementById('message');
     const messages = document.getElementById("messages");
 
-    socket.on('load messages', (messages) => {
-        const list = messages.map(({ content, username }) => {
-            const isOwnMessage = username === localStorage.getItem('username');
-            const messageClass = isOwnMessage ? 'sent' : 'received';
-            return `<li class="message ${messageClass}"><p>${content}</p><small>${username}</small></li>`;
-        }).join('');
-        document.getElementById('messages').innerHTML += list;
+    // Escuchar eventos de carga inicial de mensajes
+    socket.on('load messages', (messagesData) => {
+        setTimeout(() => {
+            removeLoadingMessages(); // Eliminar indicador de carga tras un pequeño retraso
+            const list = messagesData.map(({ content, username }) => {
+                const isOwnMessage = username === localStorage.getItem('username');
+                const messageClass = isOwnMessage ? 'sent' : 'received';
+                return `<li class="message ${messageClass}"><p>${content}</p><small>${username}</small></li>`;
+            }).join('');
+            messages.innerHTML += list;
+        }, 1000); // Retraso simulado de 1 segundo
     });
 
+    // Escuchar eventos de nuevos mensajes
     socket.on('chat message', ({ msg, username }) => {
         const isOwnMessage = username === localStorage.getItem('username');
         const messageClass = isOwnMessage ? 'sent' : 'received';
@@ -48,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messages.scrollTop = messages.scrollHeight;
     });
 
+    // Enviar mensajes
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (input.value) {

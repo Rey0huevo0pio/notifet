@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const MySQLStore=require('connect-mysql')(session);
 
 
 const db = mysql.createConnection({
@@ -8,14 +7,7 @@ const db = mysql.createConnection({
     password: '',
 });
 
-const sessionStore = new MySQLStore({
-    config:{
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database:'piochat',
-    },
-})
+
 
 db.connect(function (err) {
     if (err) {

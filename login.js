@@ -23,9 +23,14 @@ async function iniciarSesion(username, password) {
                 if (!isMatch) {
                     return reject('Usuario/Contraseña. Incorrecta.'); // Mensaje genérico
                 }
-
+                
+                setTimeout(()=>{
+                 
                 resolve('Inicio de sesión exitoso.');
+                return reject('iniciando la paguina...');
 
+            },5000);
+            
             });
         });
     });
