@@ -31,7 +31,7 @@ function verificarAutenticacion(req, res, next) {
     if (req.session.username) {
         return next();
     } else {
-        res.redirect('/');
+        res.status(401).json({ error: 'No autenticado' });
     }
 }
 
@@ -60,21 +60,37 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/login.html');
 });
 
+// Ruta para el inicio de sesión
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
-        const message = await iniciarSesion(username, password);
-        req.session.username = username;
-        res.status(200).json({ success: true, username: req.session.username, message });
+        const { message, userId, username: userUsername } = await iniciarSesion(username, password);
+
+        // Guardar datos en la sesión
+        req.session.userId = userId;
+        req.session.username = userUsername;
+
+        // Devolver respuesta JSON correctamente estructurada
+        res.status(200).json({ 
+            success: true, 
+            message, 
+            userId, 
+            username: userUsername 
+        });
     } catch (error) {
-        res.status(401).json({ success: false, message: error });
+        res.status(401).json({ 
+            success: false, 
+            message: error 
+        });
     }
 });
 
+// Ruta para el registro
 app.get('/registro', (req, res) => {
     res.sendFile(__dirname + '/public/registro.html');
 });
 
+// Ruta para manejar el registro de usuario
 app.post('/registro', async (req, res) => {
     const { username, email, password } = req.body;
     try {
@@ -85,10 +101,12 @@ app.post('/registro', async (req, res) => {
     }
 });
 
+// Ruta para la página principal (requiere autenticación)
 app.get('/principal', verificarAutenticacion, (req, res) => {
     res.sendFile(__dirname + '/public/httt/principal.html');
 });
 
+// Ruta para obtener información del usuario autenticado
 app.get('/user-info', (req, res) => {
     if (req.session.username) {
         res.json({ username: req.session.username });
@@ -97,6 +115,7 @@ app.get('/user-info', (req, res) => {
     }
 });
 
+// Ruta para cerrar sesión
 app.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -107,13 +126,22 @@ app.post('/logout', (req, res) => {
     });
 });
 
-app.post('/crear-grupo', crearGrupo);
+// Ruta para crear un grupo (requiere autenticación)
+app.post('/crear-grupo', verificarAutenticacion, (req, res) => {
+    crearGrupo(req, res, io); // Pasar el objeto 'io' al controlador
+});
 
+// Ruta para obtener los grupos (requiere autenticación)
 app.get('/mis-grupos', verificarAutenticacion, obtenerGrupos);
+
+
+
 
 // WebSockets
 io.on('connection', (socket) => {
-    console.log(`Nuevo usuario conectado: ${socket.username}`);
+    console.log('Nuevo usuario conectado: ${socket.username}');
+
+    // Cargar mensajes al conectar
     cargarMensajes((err, results) => {
         if (err) {
             socket.emit('error', 'No se pudieron cargar los mensajes');
@@ -122,6 +150,7 @@ io.on('connection', (socket) => {
         socket.emit('load messages', results);
     });
 
+    // Escuchar nuevos mensajes
     socket.on('chat message', (msg) => {
         const serverOffset = Date.now();
         guardarMensaje(msg, socket.username, serverOffset, (err) => {
@@ -133,8 +162,9 @@ io.on('connection', (socket) => {
         });
     });
 
+    // Desconectar
     socket.on('disconnect', () => {
-        console.log(`${socket.username} se ha desconectado`);
+        console.log('${socket.username} se ha desconectado');
     });
 });
 

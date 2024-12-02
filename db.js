@@ -35,7 +35,8 @@ db.connect(function (err) {
                         id INT(11) AUTO_INCREMENT PRIMARY KEY,
                         username VARCHAR(255) NOT NULL,
                         email VARCHAR(255) NOT NULL,
-                        password VARCHAR(255) NOT NULL
+                        password VARCHAR(255) NOT NULL,
+                            joined_at DATETIME DEFAULT CURRENT_TIMESTAMP
                     );
                 `;
                 const crearTabla_notif = `
@@ -43,7 +44,7 @@ db.connect(function (err) {
                     id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     userId VARCHAR(255) NOT NULL,
                     subscription VARCHAR(255) NOT NULL,
-                    created_at VARCHAR(255) NOT NULL
+                         joined_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
                    `;
                    const crearTabla_mensa= `
@@ -51,18 +52,37 @@ db.connect(function (err) {
                     id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     content TEXT,
                     username VARCHAR(255) NOT NULL,
-                    created_at VARCHAR(255) NOT NULL
+                         joined_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
                    `;
-                   const crearTabla_grupo= `
+                   const crearTabla_grupo = `
                    CREATE TABLE IF NOT EXISTS grupo (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    content VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL,
-    privilegio ENUM('public', 'private') NOT NULL,
-    created_at DATETIME NOT NULL
-);
-                      `;
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       Nombre_Grupo TEXT,
+                       descripcion TEXT,
+                       username VARCHAR(255) NOT NULL,
+                       privilegio ENUM('public', 'private') NOT NULL,
+                       creadorId INT NOT NULL,  -- Nueva columna para almacenar el ID del creador
+                       joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                       FOREIGN KEY (creadorId) REFERENCES usuarios(id) ON DELETE CASCADE
+                   );
+               `;
+               
+               const crearTabla_Usuarios_grup = `
+                   CREATE TABLE IF NOT EXISTS usuarios_grupos (
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       userId INT NOT NULL,
+                       groupId INT NOT NULL,
+                       joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                       FOREIGN KEY (userId) REFERENCES usuarios(id) ON DELETE CASCADE,
+                       FOREIGN KEY (groupId) REFERENCES grupo(id) ON DELETE CASCADE,
+                       UNIQUE (userId, groupId)
+                   );
+               `;
+               
+
+
+
                         db.query(crearTabla, function (err, result) {
                     if (err) {
                         console.error('problemas al crear la tabla "usuarios": ', err.message);
@@ -97,10 +117,20 @@ db.connect(function (err) {
                 }
                 console.log('Tabla "Grupos" fue creada correctamente.');
             });
+            db.query(crearTabla_Usuarios_grup, function (err, result) {
+                if (err) {
+                    console.error('problemas al crear la tabla "Grupos de usuarios": ', err.message);
+                    return;
+                }
+                console.log('Tabla "Grupos de usuarios" fue creada correctamente.');
+            });
         });
+
+       
+     });
      
     });
     
-});
+
 
 module.exports = db;

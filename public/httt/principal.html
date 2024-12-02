@@ -19,7 +19,6 @@
             
                 <div class="mi_grup">
                     <h4 class="tex_grup">Mis Grupos
-    
                     </h4>
                     <ul id="lis_grup">
                     </ul>
@@ -31,12 +30,20 @@
                     <ul id="lis_Amigos">
                     </ul>
                 </div>
+                <br>
+                <div class="unir_comunidad">
+                <h4>
+                    Grupos para ser parte
+                </h4>
+                <ul id="gruposList">
+                </ul>
+
+                </h4>
+                </div>
                 
             </div>
-
-          
-
-
+           
+           
             <div class="chats">
              <p>
               chat pio
@@ -49,10 +56,20 @@
             <form id="crear-grupo-form">
                 <label for="nombre-grupo">Nombre del grupo:</label>
                 <input type="text" id="nombre-grupo" name="nombre-grupo" required />
+                <label for="descripcion">Descripción del Grupo:</label>
+                <input type="text" id="descripcion" name="descripcion" required>
+        
+                <label for="privilegio">Privilegio:</label>
+                <select id="privilegio" name="privilegio" required>
+                    <option value="public">Público</option>
+                    <option value="private">Privado</option>
+                </select>
+        
                 <button type="submit" class="button_grup">Crear</button>
                 <button type="button" id="cancelar-crear-grupo" class="button_grup">Cancelar</button>
             </form>
         </div>
+        
 
 
         <!-- Ventana de chat -->
@@ -81,8 +98,11 @@
     </div>
 </body>
 <script type="text/javascript" src="../src/script.js"></script>
-<script src="../controles-js/Crear_grupo/Recargar.js"></script>
+
 <script type="text/javascript" src="../controles-js/Crear_grupo/Button_Grupo.js"></script>
+
+
+<script src="../controles-js/Crear_grupo/Unirce_grup.js"></script>
 <script type="module" src="../mensaje.js"></script>
 <script src="../controles-js/seguridad.js"></script>
 </html>
