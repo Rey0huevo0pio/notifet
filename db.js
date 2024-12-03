@@ -66,7 +66,10 @@ db.connect(function (err) {
                        joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                        FOREIGN KEY (creadorId) REFERENCES usuarios(id) ON DELETE CASCADE
                    );
+
                `;
+
+
                
                const crearTabla_Usuarios_grup = `
                    CREATE TABLE IF NOT EXISTS usuarios_grupos (

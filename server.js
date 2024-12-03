@@ -135,6 +135,55 @@ app.post('/crear-grupo', verificarAutenticacion, (req, res) => {
 app.get('/mis-grupos', verificarAutenticacion, obtenerGrupos);
 
 
+// Ruta para unirse a un grupo (requiere autenticación)
+app.post('/unirse-grupo', verificarAutenticacion, (req, res) => {
+    const userId = req.session.userId;
+    const { grupoId } = req.body;
+
+    if (!userId || !grupoId) {
+        return res.status(400).json({ error: 'Datos insuficientes' });
+    }
+
+    const query = `
+        INSERT INTO usuarios_grupos (userId, groupId) 
+        VALUES (?, ?)
+    `;
+
+    db.query(query, [userId, grupoId], (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error al unirse al grupo' });
+        }
+        res.json({ message: 'Te has unido al grupo exitosamente.' });
+    });
+});
+
+// Ruta para unirse a un grupo (requiere autenticación)
+// ... (resto del código)
+
+app.get('/grupos-disponibles', verificarAutenticacion, (req, res) => {
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(401).json({ error: 'Usuario no autenticado' });
+    }
+
+    const query = `
+        SELECT g.id, g.Nombre_Grupo, g.descripcion 
+        FROM grupo g 
+        LEFT JOIN usuarios_grupos ug ON g.id = ug.groupId
+        WHERE g.creadorId != ? 
+        AND (ug.userId != ? OR ug.userId IS NULL)
+        AND g.privilegio = 'public';
+    `;
+
+    db.query(query, [userId, userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error al obtener los grupos' });
+        }
+        res.json(results);
+    });
+});
+
+
 
 
 // WebSockets
