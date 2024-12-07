@@ -1,27 +1,35 @@
-document.querySelector('#form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const messageInput = document.querySelector('#message');
-    const message = messageInput.value.trim();
-    if (!message) {
-        alert('El mensaje no puede estar vacío');
-        return;
-    }
+document.addEventListener('DOMContentLoaded', async () => {
 
-    try {
-        const response = await fetch('/enviar-mensaje', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: message, userId, groupId }), // Asegúrate de obtener userId y groupId
-        });
+    const gruposDisponiblesDiv = document.getElementById('gruposList');
 
-        if (response.ok) {
-            messageInput.value = ''; // Limpiar el campo
-            alert('Mensaje enviado');
-        } else {
-            alert('Error al enviar el mensaje');
+    // Función para cargar los grupos
+    async function cargarGrupos() {
+        try {
+            const res = await fetch('/mis-grupos', { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+
+                // "Grupos Disponibles"
+                gruposDisponiblesDiv.innerHTML = data.gruposDisponibles.map(grupo => 
+                    <div>
+                        <strong>${grupo.Nombre_Grupo}</strong>
+                        <p>${grupo.descripcion}</p>
+                        <button class="btn-unirse" data-group-id="${grupo.id}">Unirse</button>
+                    </div>
+                ).join('');
+
+                document.querySelectorAll('.btn-unirse').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        console.log('Unirse al grupo ID: ${btn.dataset.groupId}');
+                    });
+                });
+            } else {
+                throw new Error('Error al cargar los grupos');
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error al conectar con el servidor');
     }
+
+
 });
