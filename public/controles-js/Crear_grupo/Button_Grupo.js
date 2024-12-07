@@ -1,5 +1,3 @@
-// Button_Grupo.js
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM cargado");
 
@@ -8,18 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCancelar = document.getElementById('cancelar-crear-grupo');
     const form = document.getElementById('crear-grupo-form');
 
+    // Mostrar y ocultar el formulario de creación de grupos
     if (btnCrearGrupo && formCrearGrupo && btnCancelar && form) {
-        // Mostrar el formulario de creación de grupo
         btnCrearGrupo.addEventListener('click', () => {
             formCrearGrupo.style.display = 'block';
         });
 
-        // Ocultar el formulario de creación de grupo
         btnCancelar.addEventListener('click', () => {
             formCrearGrupo.style.display = 'none';
         });
 
-        // Crear el grupo
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -46,10 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error:', error);
                 alert('Error al conectar con el servidor');
             }
+            fetchGroups();
         });
     }
 
-    // Mostrar mensaje de carga
+    // Funciones auxiliares para la carga de grupos
     const showLoadingGroups = () => {
         const lista = document.getElementById('lis_grup');
         const loadingMessage = document.createElement('li');
@@ -59,10 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
         lista.appendChild(loadingMessage);
     };
 
-    // Eliminar mensaje de carga
     const removeLoadingGroups = () => {
         const loadingMessage = document.querySelector('.loading-indicator');
         if (loadingMessage) loadingMessage.remove();
+     
     };
 
     // Obtener y mostrar los grupos
@@ -70,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const listaMisGrupos = document.getElementById('lis_grup');
         const listaGruposDisponibles = document.getElementById('gruposList');
         showLoadingGroups();
-
+       
         try {
             const res = await fetch('/mis-grupos', { credentials: 'include' });
             if (res.ok) {
@@ -79,14 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Renderizar mis grupos
                 listaMisGrupos.innerHTML = data.misGrupos.length
-                    ? data.misGrupos.map(grupo => `
-                        <li>
-                            <strong>Nombre del Grupo:</strong> ${grupo.Nombre_Grupo}<br>
-                            <p><strong>Nombre del creador:</strong> ${grupo.username}</p>
-                            <p><strong>Descripción:</strong> ${grupo.descripcion}</p>
-                        </li>`).join('')
-                    : '<li>No tienes grupos.</li>';
-
+                ? data.misGrupos.map(grupo => `
+                    <li>
+                        <strong>Nombre del Grupo:</strong> <span class="nombre-grupo">${grupo.Nombre_Grupo}</span><br>
+                        <p><strong>Nombre del creador:</strong> ${grupo.username}</p>
+                        <p><strong>Descripción:</strong> ${grupo.descripcion}</p>
+                        <button class="btn-unirse-grupo" chatear-id="${grupo.id}">mensajear</button>
+                    </li>`).join('')
+                : '<li>No tienes grupos.</li>';
+                
+            
                 // Renderizar grupos disponibles
                 listaGruposDisponibles.innerHTML = data.gruposDisponibles.length
                     ? data.gruposDisponibles.map(grupo => `
@@ -98,28 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         </li>`).join('')
                     : '<li>No hay grupos disponibles para unirse.</li>';
 
-                // Asignar eventos a los botones de unirse
-                document.querySelectorAll('.btn-unirse-grupo').forEach(boton => {
-                    boton.addEventListener('click', async (e) => {
-                        const groupId = e.target.dataset.groupId;
-                        try {
-                            const response = await fetch(`/unirse-grupo/${groupId}`, {
-                                method: 'POST',
-                                credentials: 'include',
-                            });
-
-                            if (response.ok) {
-                                alert('Te has unido al grupo.');
-                                fetchGroups(); // Actualizar las listas
-                            } else {
-                                alert('Error al unirse al grupo.');
-                            }
-                        } catch (error) {
-                            console.error('Error:', error);
-                            alert('Error al conectar con el servidor.');
-                        }
-                    });
-                });
+                // Asignar eventos a los botones de "Chatear" y "Unirse"
+            
+                asignarEventosGrupo();
             } else {
                 alert('Error al cargar los grupos');
             }
@@ -127,8 +107,60 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al cargar los grupos:', error);
             alert('Error al cargar los grupos');
         }
+      
+    };
+    fetchGroups();
+    // Asignar eventos a los botones de "Chatear" y "Unirse"
+    const asignarEventosGrupo = () => {
+        // Evento para "Chatear" en un grupo
+       document.querySelectorAll('.btn-unirse-grupo[chatear-id]').forEach(button => {
+        button.addEventListener('click', (event) => {
+        const grupoId = event.target.getAttribute('chatear-id');
+        // Selecciona el <span> que contiene el nombre del grupo
+        const grupoNombre = event.target.closest('li').querySelector('.nombre-grupo').textContent;
+
+        // Actualizar el nombre del grupo en el chat
+        document.getElementById('grupoNombre').innerText = grupoNombre;
+
+        // Iniciar chat en el grupo
+        iniciarChat(grupoId);
+    });
+   
+ });
+
+
+        // Evento para "Unirse" a un grupo
+        document.querySelectorAll('.btn-unirse-grupo[data-group-id]').forEach(boton => {
+            boton.addEventListener('click', async (e) => {
+                const groupId = e.target.dataset.groupId;
+                try {
+                    const response = await fetch(`/unirse-grupo/${groupId}`, {
+                        method: 'POST',
+                        credentials: 'include',
+                    });
+
+                    if (response.ok) {
+                        alert('Te has unido al grupo.');
+                         // Actualizar las listas
+                    } else {
+                        alert('Error al unirse al grupo.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al conectar con el servidor.');
+                }
+                fetchGroups();
+            });
+          
+        });
     };
 
-    // Cargar grupos al iniciar
+    // Función para iniciar el chat (simulada por consola por ahora)
+    function iniciarChat(Nombre_Grupo) {
+        console.log(`Iniciando chat para el grupo con ID: ${Nombre_Grupo}`);
+        // Aquí puedes agregar la lógica para cargar los mensajes del grupo o establecer la conexión con el chat.
+    }
+
+    // Cargar los grupos al iniciar
     fetchGroups();
 });

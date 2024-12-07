@@ -5,6 +5,7 @@ const session = require('express-session');
 const cors = require('cors');
 const db = require('./db');
 require('dotenv').config();
+
 const bodyParser = require('body-parser');
 const path = require('path');
 
@@ -36,14 +37,22 @@ function verificarAutenticacion(req, res, next) {
 }
 
 // Middleware para añadir el nombre de usuario al socket
-io.use((socket, next) => {
+io.use(async (socket, next) => {
     const username = socket.handshake.auth.username;
     if (!username) {
         return next(new Error('Usuario no autenticado'));
     }
-    socket.username = username;
-    next();
+
+    const query = 'SELECT id FROM usuarios WHERE username = ?';
+    db.query(query, [username], (err, results) => {
+        if (err || results.length === 0) {
+            return next(new Error('Usuario inválido'));
+        }
+        socket.userId = results[0].id;
+        next();
+    });
 });
+
 
 // Configuración del servidor
 app.use(express.json());
@@ -185,37 +194,33 @@ app.get('/grupos-disponibles', verificarAutenticacion, (req, res) => {
 
 
 
-
 // WebSockets
 io.on('connection', (socket) => {
-    console.log('Nuevo usuario conectado: ${socket.username}');
+    console.log('Nuevo usuario conectado');
 
-    // Cargar mensajes al conectar
-    cargarMensajes((err, results) => {
-        if (err) {
-            socket.emit('error', 'No se pudieron cargar los mensajes');
-            return;
-        }
-        socket.emit('load messages', results);
+    // Unir a una sala específica
+    socket.on('join room', (grupoId) => {
+        socket.join(grupoId);
+        console.log(`Usuario unido a la sala ${grupoId}`);
     });
 
-    // Escuchar nuevos mensajes
-    socket.on('chat message', (msg) => {
-        const serverOffset = Date.now();
-        guardarMensaje(msg, socket.username, serverOffset, (err) => {
+    // Manejar mensajes en una sala específica
+    socket.on('chat message', ({ msg, grupoId }) => {
+        guardarMensaje(msg, socket.username, grupoId, (err) => {
             if (err) {
                 socket.emit('error', 'No se pudo guardar el mensaje');
                 return;
             }
-            io.emit('chat message', { msg, serverOffset, username: socket.username });
+            io.to(grupoId).emit('chat message', { msg, username: socket.username });
         });
     });
 
-    // Desconectar
     socket.on('disconnect', () => {
-        console.log('${socket.username} se ha desconectado');
+        console.log('Usuario desconectado');
     });
 });
+
+
 
 server.listen(3000, () => {
     console.log('Servidor corriendo en http://localhost:3000/');
