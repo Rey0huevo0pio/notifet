@@ -3,78 +3,45 @@ import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 const socket = io();
 
 document.addEventListener('DOMContentLoaded', () => {
-    const getUsername = async () => {
-        try {
-            // Obtenemos el nombre de usuario desde el servidor
-            const res = await fetch('/user-info', { credentials: 'include' });
-            if (res.ok) {
-                const { username } = await res.json();
-                return username;
-            } else {
-                throw new Error('No se pudo obtener el usuario');
-            }
-        } catch (error) {
-            console.error(error);
-            return 'Anónimo'; // Fallback en caso de error
-        }
-    };
+    const grupoNombreElement = document.querySelector('#grupoNombre');
+const groupId = grupoNombreElement ? grupoNombreElement.dataset.groupId : null;
 
-    // Mostrar un indicador de carga mientras se obtiene el usuario
-    const showLoadingMessages = () => {
-        const messages = document.getElementById('messages');
-        messages.innerHTML = '<li class="loading">Cargando mensajes...</li>';
-    };
+if (!groupId) {
+    console.error('No se pudo obtener el ID del grupo.');
+    return;
+}
 
-    const removeLoadingMessages = () => {
-        const loadingMessage = document.querySelector('.loading');
-        if (loadingMessage) loadingMessage.remove();
-    };
+    const username = localStorage.getItem('username');
 
-    showLoadingMessages(); // Mostrar indicador de carga al inicio
+    socket.auth = { username, groupId };
+    socket.connect();
 
-    getUsername().then(username => {
-        if (username !== 'Anónimo') {
-            localStorage.setItem('username', username);
-            document.getElementById('username').textContent = username;
-            socket.auth = { username };
-            socket.connect();
-        } else {
-            window.location.href = './login.html'; // Redirigir al login si no se puede obtener el usuario
-        }
+    socket.emit('join group', groupId);
+
+    socket.on('load messages', (messages) => {
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.innerHTML = '';
+        messages.forEach(({ content, username }) => {
+            const messageClass = username === localStorage.getItem('username') ? 'sent' : 'received';
+            const messageElement = `<li class="${messageClass}">${content}</li>`;
+            messagesContainer.innerHTML += messageElement;
+        });
     });
 
-    const form = document.getElementById('form');
-    const input = document.getElementById('message');
-    const messages = document.getElementById("messages");
-
-    // Escuchar eventos de carga inicial de mensajes
-    socket.on('load messages', (messagesData) => {
-        setTimeout(() => {
-            removeLoadingMessages(); // Eliminar indicador de carga tras un pequeño retraso
-            const list = messagesData.map(({ content, username }) => {
-                const isOwnMessage = username === localStorage.getItem('username');
-                const messageClass = isOwnMessage ? 'sent' : 'received';
-                return `<li class="message ${messageClass}"><p>${content}</p><small>${username}</small></li>`;
-            }).join('');
-            messages.innerHTML += list;
-        }, 1000); // Retraso simulado de 1 segundo
+    socket.on('chat message', ({ content, username }) => {
+        const messageClass = username === localStorage.getItem('username') ? 'sent' : 'received';
+        const messageElement = `<li class="${messageClass}">${content}</li>`;
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.innerHTML += messageElement;
     });
 
-    // Escuchar eventos de nuevos mensajes
-    socket.on('chat message', ({ msg, username }) => {
-        const isOwnMessage = username === localStorage.getItem('username');
-        const messageClass = isOwnMessage ? 'sent' : 'received';
-        const item = `<li class="message ${messageClass}"><p>${msg}</p><small>${username}</small></li>`;
-        messages.insertAdjacentHTML('beforeend', item);
-        messages.scrollTop = messages.scrollHeight;
-    });
-
-    // Enviar mensajes
-    form.addEventListener('submit', (e) => {
+    document.getElementById('form').addEventListener('submit', (e) => {
         e.preventDefault();
-        if (input.value) {
-            socket.emit('chat message', input.value);
-            input.value = '';
-        }
+        const messageInput = document.getElementById('message');
+        const msg = messageInput.value;
+        const groupId = parseInt(document.getElementById('grupoNombre').dataset.groupId); // Asegurarse que sea un número
+        socket.emit('chat message', { msg, groupId });
+        messageInput.value = '';
     });
+    
 });

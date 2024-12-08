@@ -66,8 +66,8 @@ db.connect(function (err) {
                        joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                        FOREIGN KEY (creadorId) REFERENCES usuarios(id) ON DELETE CASCADE
                    );
-
-               `;               
+               `;
+               
                const crearTabla_Usuarios_grup = `
                    CREATE TABLE IF NOT EXISTS usuarios_grupos (
                        id INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,19 +80,17 @@ db.connect(function (err) {
                    );
                `;
                const crearTabla_grup_mensaje = `
-              CREATE TABLE IF NOT EXISTS mensajes_grupos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    groupId INT NOT NULL,               -- Grupo al que pertenece el mensaje
-    userId INT NOT NULL,                -- Usuario que envió el mensaje
-    content TEXT NOT NULL,              -- Contenido del mensaje
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora del mensaje
-    FOREIGN KEY (groupId) REFERENCES grupo(id) ON DELETE CASCADE,
-    FOREIGN KEY (userId) REFERENCES usuarios(id) ON DELETE CASCADE
-);
-
-           `;
-               
-               
+               CREATE TABLE IF NOT EXISTS mensajes_grupos (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     groupId INT NOT NULL,               -- Grupo al que pertenece el mensaje
+     userId INT NOT NULL,                -- Usuario que envió el mensaje
+     content TEXT NOT NULL,              -- Contenido del mensaje
+     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora del mensaje
+     FOREIGN KEY (groupId) REFERENCES grupo(id) ON DELETE CASCADE,
+     FOREIGN KEY (userId) REFERENCES usuarios(id) ON DELETE CASCADE
+ );
+ 
+            `;
 
 
 
@@ -139,10 +137,10 @@ db.connect(function (err) {
             });
             db.query(crearTabla_grup_mensaje, function (err, result) {
                 if (err) {
-                    console.error('problemas al crear la tabla "mensajes de grupo": ', err.message);
+                    console.error('problemas al crear la tabla "mensaes grupo de usuarios": ', err.message);
                     return;
                 }
-                console.log('Tabla "mensajes de grupo" fue creada correctamente.');
+                console.log('Tabla "mensajes Grupos de usuarios" fue creada correctamente.');
             });
         });
 

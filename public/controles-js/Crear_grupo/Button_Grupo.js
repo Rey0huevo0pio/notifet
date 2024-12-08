@@ -111,24 +111,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     fetchGroups();
     // Asignar eventos a los botones de "Chatear" y "Unirse"
+  
     const asignarEventosGrupo = () => {
         // Evento para "Chatear" en un grupo
-       document.querySelectorAll('.btn-unirse-grupo[chatear-id]').forEach(button => {
-        button.addEventListener('click', (event) => {
-        const grupoId = event.target.getAttribute('chatear-id');
-        // Selecciona el <span> que contiene el nombre del grupo
-        const grupoNombre = event.target.closest('li').querySelector('.nombre-grupo').textContent;
-
-        // Actualizar el nombre del grupo en el chat
-        document.getElementById('grupoNombre').innerText = grupoNombre;
-
-        // Iniciar chat en el grupo
-        iniciarChat(grupoId);
-    });
-   
- });
-
-
+        document.querySelectorAll('.btn-unirse-grupo[chatear-id]').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const grupoId = parseInt(event.target.getAttribute('chatear-id')); // Convertir a entero
+                const grupoNombre = event.target.closest('li').querySelector('.nombre-grupo').textContent;
+        
+                // Actualizar el nombre del grupo en el chat
+                const grupoNombreElement = document.getElementById('grupoNombre');
+                grupoNombreElement.innerText = grupoNombre;
+                grupoNombreElement.setAttribute('data-group-id', grupoId); // Actualizar el data-group-id
+        
+                // Iniciar chat en el grupo
+                iniciarChat(grupoId);
+            });
+        });
+        
         // Evento para "Unirse" a un grupo
         document.querySelectorAll('.btn-unirse-grupo[data-group-id]').forEach(boton => {
             boton.addEventListener('click', async (e) => {

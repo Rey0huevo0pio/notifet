@@ -188,32 +188,58 @@ app.get('/grupos-disponibles', verificarAutenticacion, (req, res) => {
 
 // WebSockets
 io.on('connection', (socket) => {
-    console.log('Nuevo usuario conectado: ${socket.username}');
+    console.log(`Usuario conectado: ${socket.id}`);
 
-    // Cargar mensajes al conectar
-    cargarMensajes((err, results) => {
-        if (err) {
-            socket.emit('error', 'No se pudieron cargar los mensajes');
+    // Evento para unirse a un grupo
+    socket.on('join group', (groupId) => {
+        if (!groupId) {
+            socket.emit('error', 'No se pudo identificar el grupo.');
             return;
         }
-        socket.emit('load messages', results);
-    });
+        socket.join(groupId);
+        console.log(`Usuario ${socket.id} unido al grupo ${groupId}`);
 
-    // Escuchar nuevos mensajes
-    socket.on('chat message', (msg) => {
-        const serverOffset = Date.now();
-        guardarMensaje(msg, socket.username, serverOffset, (err) => {
+        cargarMensajes(groupId, (err, messages) => {
             if (err) {
-                socket.emit('error', 'No se pudo guardar el mensaje');
+                socket.emit('error', 'No se pudieron cargar los mensajes.');
                 return;
             }
-            io.emit('chat message', { msg, serverOffset, username: socket.username });
+            socket.emit('load messages', messages);
         });
     });
 
-    // Desconectar
+    // Evento para enviar un mensaje
+    socket.on('chat message', ({ msg, groupId }) => {
+        console.log('Mensaje recibido:', { msg, groupId, username: socket.username });
+    
+        if (isNaN(groupId) || !groupId) {
+            console.log('Invalid groupId:', groupId);
+            return;
+        }
+        
+    
+        // Convertir el groupId a un número
+        const groupIdInt = parseInt(groupId);    
+        // Aquí vamos a imprimir el mensaje y la consulta para asegurarnos de que todo está llegando correctamente
+        console.log('Guardando mensaje...', {groupId: groupIdInt, username: socket.username });
+    
+        guardarMensaje(msg, socket.username, groupIdInt, Date.now(), (err, message) => {
+            if (err) {
+                console.error('Error al guardar el mensaje:', err);
+                socket.emit('error', 'Error al guardar el mensaje.');
+                return;
+            }
+    
+            // Si el mensaje se guarda correctamente, emitirlo a todos los miembros del grupo
+            console.log('Mensaje guardado:', message);
+            io.to(groupIdInt).emit('chat message', { content: msg, username: socket.username });
+        });
+    });
+    
+    
+
     socket.on('disconnect', () => {
-        console.log('${socket.username} se ha desconectado');
+        console.log(`Usuario desconectado: ${socket.id}`);
     });
 });
 
