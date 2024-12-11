@@ -18,7 +18,7 @@ const cargarMensajes = (groupId, callback) => {
             console.error('Error al cargar mensajes:', err);
             return callback(err, null);
         }
-        console.log('Mensajes cargados:', results);
+
         callback(null, results);
     });
 };
@@ -33,6 +33,10 @@ const cargarMensajes = (groupId, callback) => {
  * @param {Function} callback Función de devolución de llamada con los resultados o el error.
  */
 const guardarMensaje = (msg, username, groupId, timestamp, callback) => {
+    if (!msg.trim()) {
+        return callback('El mensaje no puede estar vacío.');
+    }
+
     const queryUser = 'SELECT id FROM usuarios WHERE username = ?';
     db.query(queryUser, [username], (err, results) => {
         if (err || results.length === 0) {
@@ -54,6 +58,8 @@ const guardarMensaje = (msg, username, groupId, timestamp, callback) => {
         });
     });
 };
+
+
 
 
 

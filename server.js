@@ -201,37 +201,50 @@ app.get('/cargar-mensajes/:groupId', (req, res) => {
 
 // WebSockets
 io.on('connection', (socket) => {
-    const { groupId, username } = socket.handshake.auth;
+    console.log(`Nuevo usuario conectado: ${socket.username}`);
 
-    if (!groupId || !username) {
-        console.error('Faltan datos de autenticación en la conexión del socket');
-        return;
-    }
-
-    // Unir al socket al grupo especificado
-    socket.join(groupId);
-
-    // Cuando un usuario se une al grupo, cargar los mensajes
+    // Unir a un grupo y cargar mensajes
     socket.on('join group', (groupId) => {
-        const query = 'SELECT * FROM mensajes_grupos WHERE groupId = ? ORDER BY created_at DESC';
-        db.query(query, [groupId], (err, mensajes) => {
+        if (!groupId) {
+            socket.emit('error', 'No se pudo identificar el grupo.');
+            return;
+        }
+        socket.join(groupId);
+        console.log(`Usuario ${socket.id} unido al grupo ${groupId}`);
+    
+        // Cargar los mensajes del grupo al unirse
+        cargarMensajes(groupId, (err, messages) => {
             if (err) {
-                console.error('Error al cargar los mensajes:', err);
+                socket.emit('error', 'No se pudieron cargar los mensajes.');
                 return;
             }
-            socket.emit('load messages', mensajes); // Enviar los mensajes cargados al cliente
+            // Emitir los mensajes al cliente
+            socket.emit('load messages', messages);
         });
     });
+    
+    socket.on('load messages', (messages) => {
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.innerHTML = '';  // Limpiar mensajes anteriores
+        messages.forEach(({ content, username }) => {
+            const messageClass = username === localStorage.getItem('username') ? 'sent' : 'received';
+            const messageElement = document.createElement('li');
+            messageElement.classList.add(messageClass);
+            messageElement.textContent = content;
+            messagesContainer.appendChild(messageElement);
+        });
+    });
+    
 
-    // Para enviar mensajes en tiempo real
+    // Manejar nuevos mensajes
     socket.on('chat message', ({ msg, groupId }) => {
         console.log('Mensaje recibido:', { msg, groupId, username: socket.username });
-    
+
         if (isNaN(groupId) || !groupId) {
             console.log('Invalid groupId:', groupId);
             return;
         }
-    
+
         // Guardar el mensaje en la base de datos
         guardarMensaje(msg, socket.username, groupId, Date.now(), (err, message) => {
             if (err) {
@@ -239,14 +252,20 @@ io.on('connection', (socket) => {
                 socket.emit('error', 'Error al guardar el mensaje.');
                 return;
             }
-    
+
             // Si el mensaje se guarda correctamente, emitirlo a todos los miembros del grupo
             console.log('Mensaje guardado:', message);
             io.to(groupId).emit('chat message', { content: msg, username: socket.username });
         });
     });
+
     
+
+    socket.on('disconnect', () => {
+        console.log(`${socket.username} se ha desconectado`);
+    });
 });
+
 
 
 
