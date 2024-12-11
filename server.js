@@ -157,6 +157,9 @@ app.post('/unirse-grupo', verificarAutenticacion, (req, res) => {
     });
 });
 
+
+
+
 // Ruta para unirse a un grupo (requiere autenticación)
 // ... (resto del código)
 
@@ -183,32 +186,44 @@ app.get('/grupos-disponibles', verificarAutenticacion, (req, res) => {
     });
 });
 
+app.get('/cargar-mensajes/:groupId', (req, res) => {
+    const groupId = req.params.groupId;
+    cargarMensajes(groupId, (err, mensajes) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error al cargar los mensajes' });
+        }
+        res.json({ mensajes });
+    });
+});
+
 
 
 
 // WebSockets
 io.on('connection', (socket) => {
-    console.log(`Usuario conectado: ${socket.id}`);
+    const { groupId, username } = socket.handshake.auth;
 
-    // Evento para unirse a un grupo
+    if (!groupId || !username) {
+        console.error('Faltan datos de autenticación en la conexión del socket');
+        return;
+    }
+
+    // Unir al socket al grupo especificado
+    socket.join(groupId);
+
+    // Cuando un usuario se une al grupo, cargar los mensajes
     socket.on('join group', (groupId) => {
-        if (!groupId) {
-            socket.emit('error', 'No se pudo identificar el grupo.');
-            return;
-        }
-        socket.join(groupId);
-        console.log(`Usuario ${socket.id} unido al grupo ${groupId}`);
-
-        cargarMensajes(groupId, (err, messages) => {
+        const query = 'SELECT * FROM mensajes_grupos WHERE groupId = ? ORDER BY created_at DESC';
+        db.query(query, [groupId], (err, mensajes) => {
             if (err) {
-                socket.emit('error', 'No se pudieron cargar los mensajes.');
+                console.error('Error al cargar los mensajes:', err);
                 return;
             }
-            socket.emit('load messages', messages);
+            socket.emit('load messages', mensajes); // Enviar los mensajes cargados al cliente
         });
     });
 
-    // Evento para enviar un mensaje
+    // Para enviar mensajes en tiempo real
     socket.on('chat message', ({ msg, groupId }) => {
         console.log('Mensaje recibido:', { msg, groupId, username: socket.username });
     
@@ -216,14 +231,9 @@ io.on('connection', (socket) => {
             console.log('Invalid groupId:', groupId);
             return;
         }
-        
     
-        // Convertir el groupId a un número
-        const groupIdInt = parseInt(groupId);    
-        // Aquí vamos a imprimir el mensaje y la consulta para asegurarnos de que todo está llegando correctamente
-        console.log('Guardando mensaje...', {groupId: groupIdInt, username: socket.username });
-    
-        guardarMensaje(msg, socket.username, groupIdInt, Date.now(), (err, message) => {
+        // Guardar el mensaje en la base de datos
+        guardarMensaje(msg, socket.username, groupId, Date.now(), (err, message) => {
             if (err) {
                 console.error('Error al guardar el mensaje:', err);
                 socket.emit('error', 'Error al guardar el mensaje.');
@@ -232,16 +242,13 @@ io.on('connection', (socket) => {
     
             // Si el mensaje se guarda correctamente, emitirlo a todos los miembros del grupo
             console.log('Mensaje guardado:', message);
-            io.to(groupIdInt).emit('chat message', { content: msg, username: socket.username });
+            io.to(groupId).emit('chat message', { content: msg, username: socket.username });
         });
     });
     
-    
-
-    socket.on('disconnect', () => {
-        console.log(`Usuario desconectado: ${socket.id}`);
-    });
 });
+
+
 
 server.listen(3000, () => {
     console.log('Servidor corriendo en http://localhost:3000/');

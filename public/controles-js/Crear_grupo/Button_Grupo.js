@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <strong>Nombre del Grupo:</strong> <span class="nombre-grupo">${grupo.Nombre_Grupo}</span><br>
                         <p><strong>Nombre del creador:</strong> ${grupo.username}</p>
                         <p><strong>Descripción:</strong> ${grupo.descripcion}</p>
+                        <p><strong>Descripción: id</strong> ${grupo.id}</p>
                         <button class="btn-unirse-grupo" chatear-id="${grupo.id}">mensajear</button>
                     </li>`).join('')
                 : '<li>No tienes grupos.</li>';
@@ -112,22 +113,55 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchGroups();
     // Asignar eventos a los botones de "Chatear" y "Unirse"
   
+
+    
+     
     const asignarEventosGrupo = () => {
+
+        
         // Evento para "Chatear" en un grupo
         document.querySelectorAll('.btn-unirse-grupo[chatear-id]').forEach(button => {
             button.addEventListener('click', (event) => {
-                const grupoId = parseInt(event.target.getAttribute('chatear-id')); // Convertir a entero
+                const grupoId = parseInt(event.target.getAttribute('chatear-id'), 10);
+        
+                if (isNaN(grupoId)) {
+                    console.error('El ID del grupo no es válido.');
+                    return;
+                }
+        
                 const grupoNombre = event.target.closest('li').querySelector('.nombre-grupo').textContent;
         
-                // Actualizar el nombre del grupo en el chat
+                // Actualizar el nombre del grupo y asignar el ID
                 const grupoNombreElement = document.getElementById('grupoNombre');
-                grupoNombreElement.innerText = grupoNombre;
-                grupoNombreElement.setAttribute('data-group-id', grupoId); // Actualizar el data-group-id
+                if (grupoNombreElement) {
+                    grupoNombreElement.innerText = grupoNombre; // Actualizar nombre del grupo
+                    grupoNombreElement.setAttribute('data-group-id', grupoId); // Actualizar ID del grupo
+                }
         
-                // Iniciar chat en el grupo
-                iniciarChat(grupoId);
+                // Cargar mensajes desde el servidor
+                fetch(`/cargar-mensajes/${grupoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const mensajes = data.mensajes;
+                        const chatContainer = document.getElementById('messages'); // Asegúrate de tener este contenedor
+        
+                        // Limpiar y mostrar mensajes en el contenedor
+                        chatContainer.innerHTML = '';
+                        mensajes.forEach(msg => {
+                            const mensajeElement = document.createElement('li');
+                            const messageClass = msg.username === localStorage.getItem('username') ? 'sent' : 'received';
+                            mensajeElement.className = messageClass;
+                            mensajeElement.textContent = `${msg.username}: ${msg.content}`;
+                            chatContainer.appendChild(mensajeElement);
+                        });
+        
+                        // Conectar al grupo con WebSocket
+                        iniciarChat(grupoId);
+                    })
+                    .catch(err => console.error('Error al cargar los mensajes:', err));
             });
         });
+        
         
         // Evento para "Unirse" a un grupo
         document.querySelectorAll('.btn-unirse-grupo[data-group-id]').forEach(boton => {

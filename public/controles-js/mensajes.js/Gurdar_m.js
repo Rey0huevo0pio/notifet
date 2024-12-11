@@ -5,6 +5,7 @@ const db = require('../../../db');
  * @param {Function} Función de devolución de llamada con los resultados o el error.
  */
 const cargarMensajes = (groupId, callback) => {
+    console.log('Cargando mensajes para el grupo ID:', groupId);
     const query = `
         SELECT m.content, u.username 
         FROM mensajes_grupos m
@@ -12,7 +13,14 @@ const cargarMensajes = (groupId, callback) => {
         WHERE m.groupId = ?
         ORDER BY m.created_at ASC;
     `;
-    db.query(query, [groupId], callback);
+    db.query(query, [groupId], (err, results) => {
+        if (err) {
+            console.error('Error al cargar mensajes:', err);
+            return callback(err, null);
+        }
+        console.log('Mensajes cargados:', results);
+        callback(null, results);
+    });
 };
 
 

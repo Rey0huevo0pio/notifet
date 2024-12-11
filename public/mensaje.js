@@ -4,15 +4,14 @@ const socket = io();
 
 document.addEventListener('DOMContentLoaded', () => {
     const grupoNombreElement = document.querySelector('#grupoNombre');
-const groupId = grupoNombreElement ? grupoNombreElement.dataset.groupId : null;
+    const groupId = grupoNombreElement ? grupoNombreElement.dataset.groupId : null;
 
-if (!groupId) {
-    console.error('No se pudo obtener el ID del grupo.');
-    return;
-}
+    if (!groupId) {
+        console.error('No se pudo obtener el ID del grupo.');
+        return;
+    }
 
     const username = localStorage.getItem('username');
-
     socket.auth = { username, groupId };
     socket.connect();
 
@@ -43,5 +42,4 @@ if (!groupId) {
         socket.emit('chat message', { msg, groupId });
         messageInput.value = '';
     });
-    
 });
